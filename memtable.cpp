@@ -24,16 +24,8 @@ class Memtable{
 
 			vector<data_entry> past_logs = wal_log.recover();
 			for (data_entry i:past_logs){
-				if (!(i.tombstone)){//if this wasnt a delete
-					table[i.key].first = i.value;
-					table[i.key].second= i.tombstone;
-				}
-				else{// it is a remove operation
-					auto obj = table.find(i.key);
-					if (obj!=table.end()){
-						obj->second.second=true;
-					}
-				}
+				table[i.key].first = i.value;
+				table[i.key].second= i.tombstone;
 			}
 		}
 
@@ -50,6 +42,7 @@ class Memtable{
 
 			wal_log.write_wal(key,value,false);
 			table[key].first = value;
+			table[key].second = false;
 			count++;
 
 			if (count==5){
@@ -63,25 +56,27 @@ class Memtable{
 		std::optional<std::string> get(std::string key_){
 			try{
 			auto answer =  table.at(key_);
+			if (!answer.second){
 			return answer.first;
 			}
-			catch (const std::out_of_range& e){
-				std::cout<<"No data found"<<std::endl;
-				return std::nullopt;
+			return std::nullopt;
 			}
-			if (answer.second){
+			catch (const std::out_of_range& e){
+				//ADD BEHAVIOUR TO SEARCH SSTABLE ONCE U MAKE IT
+				std::cout<<"No data found"<<std::endl;
 				return std::nullopt;
 			}
 
 		}
 
 		void delete_value(std::string key_){
+			wal_log.write_wal(key_," ",true);
 			auto obj = table.find(key_);
 			if (obj!=table.end()){
 
-			wal_log.write_wal(key_," ",true);
 			obj->second.second=true;
 			}
+			//ADD LOGIC TO HANDLE THE SSTABLE LOGIC FOR THIS SO THAT DELETE IS COUNTED
 
 		}
 
