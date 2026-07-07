@@ -24,17 +24,17 @@ class SSTable{
       int size = table.size();
       int arr_idx=0;
       uint32_t byte_count=0;
-      uint32_t arr[size];
+      std::vector<uint32_t> arr;
       std::vector<std::string> temp;
 
       //writing the data into the file
       for (auto const& [key,value] : table){
-        arr[arr_idx]=byte_count
+        arr.push_back(byte_count);
 
         //writing the key at the start of the line
         uint32_t key_len = key.size();
         write(fd,reinterpret_cast<const char*>(&key_len),sizeof(key_len));
-        byte_count+=sizeof(key_len)
+        byte_count+=sizeof(key_len);
         write(fd,key.data(),key_len);
         byte_count+=key_len;
         temp.push_back(key);
@@ -59,17 +59,19 @@ class SSTable{
       }
 
       //writing the index list at the end of the file
-      int start_of_index_table = byte_count;
+      uint32_t start_of_index_table = byte_count;
 
-      for (int i=0;i<arr_idx,i++){
+      for (int i=0;i<arr_idx;i++){
 
         uint32_t key_len = temp.at(i).size();
 
         write(fd,reinterpret_cast<const char*>(&key_len),sizeof(key_len));
         write(fd,temp.at(i).data(),key_len);
-        write(fd,arr[i],sizeof(uint32_t));
+        write(fd,reinterpret_cast<const char*>(&arr.at(i)),sizeof(uint32_t));
 
       }
+
+      write(fd,reinterpret_cast<const char*>(&start_of_index_table),sizeof(uint32_t);
 
     } 
 
