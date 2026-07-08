@@ -119,7 +119,7 @@ class SSTable{
       //implement binary search on hash_map
       
       int left = 0;
-      int right = hash_map.size();
+      int right = hash_map.size()-1;
       int byte_offset=-1;
 
       while(left<=right){
@@ -129,6 +129,7 @@ class SSTable{
 
         if (mid_element.first==key){
          byte_offset = mid_element.second;
+         break;
         }
 
         else if(key<mid_element.first){
