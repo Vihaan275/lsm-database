@@ -1,0 +1,14 @@
+tables/
+data/
+
+# build artifacts
+*.o
+*.obj
+*.out
+*.exe
+
+#CMake
+build/
+CMakeCache.txt
+CMakeFiles/
+
