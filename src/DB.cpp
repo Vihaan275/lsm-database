@@ -5,7 +5,7 @@
 #include <iostream>
 
 void DB::load_sstables() {
-    std::string file_path = "tables/";
+    std::string file_path = "../tables/";
     for (auto& entry : std::filesystem::directory_iterator(file_path)) {
         sstables.emplace_back(std::stoi(entry.path().stem().string()));
     }
@@ -61,3 +61,12 @@ std::optional<std::string> DB::db_get_value(std::string key) {
     }
     return std::nullopt;
 }
+
+int main(){
+  DB database;
+  auto value = database.db_get_value("i");
+  if (value){
+    std::cout<<*value<<std::endl;
+  }
+}
+

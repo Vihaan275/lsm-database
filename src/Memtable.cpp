@@ -25,6 +25,10 @@ void Memtable::put(std::string key, std::string value) {
     table[key].second = false;
 }
 
+std::map<std::string, std::pair<std::string, bool>> Memtable::get_table(){
+  return table;
+}
+
 void Memtable::put_for_del(std::string key, std::string value) {
     wal_log.write_wal(key, value, true);
     table[key].first = value;

@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-#include "wal.h"
+#include "WAL.h"
 
 class Memtable {
 public:
@@ -16,6 +16,7 @@ public:
     void put_for_del(std::string key, std::string value);
     std::optional<std::string> get(std::string key_);
     void delete_value(std::string key_);
+    std::map<std::string, std::pair<std::string, bool>> get_table();
 
 private:
     std::map<std::string, std::pair<std::string, bool>> table;
